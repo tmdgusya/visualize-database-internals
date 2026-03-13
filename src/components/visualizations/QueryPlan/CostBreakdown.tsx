@@ -7,7 +7,7 @@ interface CostBreakdownProps {
 }
 
 export function CostBreakdown({ compact = false }: CostBreakdownProps) {
-  const { planTree, getTotalCost } = useQueryPlanStore();
+  const { planTree } = useQueryPlanStore();
 
   const costData = useMemo(() => {
     if (!planTree) return null;

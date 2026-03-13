@@ -124,11 +124,12 @@ const calculateScanCost = (
   let total = 0;
 
   switch (type) {
-    case 'seq':
+    case 'seq': {
       // Sequential scan: read all pages + process all tuples
       total = pages * seq_page_cost + tuples * cpu_tuple_cost;
       break;
-    case 'index':
+    }
+    case 'index': {
       // Index scan: random page access + index tuple processing
       const indexPages = Math.ceil(pages * selectivity);
       const heapPages = Math.ceil(pages * selectivity * 0.5); // Approximation
@@ -138,7 +139,8 @@ const calculateScanCost = (
         heapPages * random_page_cost +
         tuples * selectivity * (cpu_tuple_cost + cpu_index_tuple_cost);
       break;
-    case 'bitmap':
+    }
+    case 'bitmap': {
       // Bitmap scan: index scan + bitmap build + heap scan
       startup = tuples * selectivity * cpu_index_tuple_cost;
       total =
@@ -146,6 +148,7 @@ const calculateScanCost = (
         pages * selectivity * seq_page_cost +
         tuples * selectivity * cpu_tuple_cost;
       break;
+    }
   }
 
   return { startup: Math.round(startup * 100) / 100, total: Math.round(total * 100) / 100 };
@@ -165,17 +168,19 @@ const calculateJoinCost = (
   let total = 0;
 
   switch (type) {
-    case 'nested':
+    case 'nested': {
       // Nested loop: outer cost + (outer rows * inner cost)
       startup = outerCost;
       total = outerCost + outerRows * innerCost + outerRows * innerRows * cpu_tuple_cost;
       break;
-    case 'hash':
+    }
+    case 'hash': {
       // Hash join: build hash table + probe
       startup = innerCost + innerRows * cpu_tuple_cost; // Build phase
       total = startup + outerCost + outerRows * cpu_tuple_cost + outerRows * cpu_operator_cost;
       break;
-    case 'merge':
+    }
+    case 'merge': {
       // Merge join: sort both sides + merge
       const sortCost =
         outerRows * Math.log2(outerRows + 1) * cpu_tuple_cost +
@@ -183,6 +188,7 @@ const calculateJoinCost = (
       startup = outerCost + innerCost + sortCost;
       total = startup + (outerRows + innerRows) * cpu_tuple_cost;
       break;
+    }
   }
 
   return { startup: Math.round(startup * 100) / 100, total: Math.round(total * 100) / 100 };
@@ -298,7 +304,7 @@ export const generatePlanFromSQL = (sql: string): PlanNode | null => {
     let nodeType: PlanNodeType = 'SeqScan';
     let cost: { startup: number; total: number };
     let rows = 1000; // Default estimate
-    let width = 100; // Default width
+    const width = 100; // Default width
 
     // Estimate rows based on conditions
     if (parsed.conditions.length > 0) {
@@ -308,15 +314,20 @@ export const generatePlanFromSQL = (sql: string): PlanNode | null => {
     // Choose scan type
     if (hasIndex && parsed.columns.length > 0 && !parsed.columns.includes('*')) {
       nodeType = 'IndexOnlyScan';
-      cost = calculateScanCost('index', 50, rows, 0.1);
     } else if (hasIndex) {
       nodeType = 'IndexScan';
-      cost = calculateScanCost('index', 50, rows, 0.1);
     } else if (hasMultipleConditions) {
       nodeType = 'BitmapScan';
-      cost = calculateScanCost('bitmap', 100, rows, 0.2);
     } else {
       nodeType = 'SeqScan';
+    }
+
+    // Calculate cost based on node type
+    if (nodeType === 'IndexOnlyScan' || nodeType === 'IndexScan') {
+      cost = calculateScanCost('index', 50, rows, 0.1);
+    } else if (nodeType === 'BitmapScan') {
+      cost = calculateScanCost('bitmap', 100, rows, 0.2);
+    } else {
       cost = calculateScanCost('seq', 100, rows);
     }
 
@@ -480,15 +491,6 @@ WHERE o.created_at > '2024-01-01'
 GROUP BY c.name
 ORDER BY total_amount DESC
 LIMIT 10`,
-};
-
-// Get all node IDs in the tree (for execution stepping)
-const getAllNodeIds = (node: PlanNode): string[] => {
-  const ids = [node.id];
-  for (const child of node.children) {
-    ids.push(...getAllNodeIds(child));
-  }
-  return ids;
 };
 
 // Get execution order (post-order traversal for pull-based execution)

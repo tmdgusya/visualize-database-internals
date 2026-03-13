@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, useCallback } from 'react';
 import * as d3 from 'd3';
-import { useQueryPlanStore, PlanNode, PlanNodeType } from '../../../stores/queryPlanStore';
+import { useQueryPlanStore, type PlanNode, type PlanNodeType } from '../../../stores/queryPlanStore';
 import { ZoomIn, ZoomOut, Maximize, Move } from 'lucide-react';
 
 // Node colors by type

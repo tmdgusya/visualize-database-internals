@@ -5,6 +5,8 @@ import { BTreeVisualizer } from './components/visualizations/BTree'
 import { TOASTDemonstrator } from './components/visualizations/TOAST'
 import { MVCCTimeline } from './components/visualizations/MVCC'
 import { QueryPlanVisualizer } from './components/visualizations/QueryPlan'
+import { JoinAlgorithmAnimator } from './components/visualizations/JoinAlgorithm'
+import { VacuumSimulator } from './components/visualizations/VACUUM'
 
 function App() {
   return (
@@ -69,6 +71,20 @@ function App() {
               7. Query Execution Plan (쿼리 실행 계획)
             </h2>
             <QueryPlanVisualizer />
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              8. Join Algorithms (조인 알고리즘)
+            </h2>
+            <JoinAlgorithmAnimator />
+          </section>
+
+          <section>
+            <h2 className="text-xl font-semibold text-gray-900 dark:text-white mb-4">
+              9. VACUUM
+            </h2>
+            <VacuumSimulator />
           </section>
         </div>
       </main>

@@ -15,7 +15,6 @@ export function PageView() {
   
   const headerHeight = 60
   const linePointerHeight = 20
-  const scale = Math.min(1, 600 / page.size * 100)
 
   return (
     <div className="space-y-4">

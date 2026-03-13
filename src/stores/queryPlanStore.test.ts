@@ -177,7 +177,7 @@ describe('QueryPlanStore', () => {
     });
 
     it('should have valid SQL in preset queries', () => {
-      Object.entries(PRESET_QUERIES).forEach(([key, sql]) => {
+      Object.entries(PRESET_QUERIES).forEach(([, sql]) => {
         expect(sql).toContain('SELECT');
         expect(sql.length).toBeGreaterThan(10);
       });

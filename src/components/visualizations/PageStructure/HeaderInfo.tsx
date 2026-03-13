@@ -36,7 +36,7 @@ export function HeaderInfo() {
             {field.desc}
           </p>
           <div className="mt-2 p-2 bg-blue-50 dark:bg-blue-900/20 rounded text-xs font-mono text-blue-800 dark:text-blue-200">
-            현재 값: {String((page.header as Record<string, unknown>)[hoveredHeaderField])}
+            현재 값: {hoveredHeaderField ? String((page.header as unknown as Record<string, string | number>)[hoveredHeaderField]) : ''}
           </div>
         </div>
       ) : (

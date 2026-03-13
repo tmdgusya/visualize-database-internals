@@ -8,7 +8,7 @@ import { ByteView } from './ByteView'
 
 export function PageStructureVisualizer() {
   const [activeTab, setActiveTab] = useState<'visual' | 'byte'>('visual')
-  const { page, freeSpace, totalTupleSize, isByteView, toggleByteView } = usePageStore()
+  const { page, freeSpace, totalTupleSize } = usePageStore()
 
   return (
     <div className="bg-white dark:bg-gray-800 rounded-lg shadow-lg border border-gray-200 dark:border-gray-700 overflow-hidden">

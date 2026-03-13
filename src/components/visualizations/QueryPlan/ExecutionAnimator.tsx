@@ -1,4 +1,4 @@
-import { useEffect, useState } from 'react';
+
 import { motion, AnimatePresence } from 'framer-motion';
 import { useQueryPlanStore } from '../../../stores/queryPlanStore';
 import {
@@ -28,16 +28,8 @@ export function ExecutionAnimator() {
     getNodeCount,
   } = useQueryPlanStore();
 
-  const [progress, setProgress] = useState(0);
   const totalSteps = getNodeCount();
-
-  useEffect(() => {
-    if (totalSteps > 0) {
-      setProgress((currentStep / totalSteps) * 100);
-    } else {
-      setProgress(0);
-    }
-  }, [currentStep, totalSteps]);
+  const progress = totalSteps > 0 ? (currentStep / totalSteps) * 100 : 0;
 
   if (!planTree) {
     return (

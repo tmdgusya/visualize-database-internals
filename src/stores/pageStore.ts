@@ -170,7 +170,6 @@ export const usePageStore = create<PageState>((set, get) => ({
   get fragmentation() {
     const { page } = get();
     const totalSpace = page.size - PAGE_HEADER_SIZE;
-    const usedSpace = page.tuples.reduce((sum, t) => sum + t.length, 0);
     const deadSpace = page.linePointers
       .filter((lp) => lp.flags === 0)
       .reduce((sum, lp) => sum + lp.length, 0);

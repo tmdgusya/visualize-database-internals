@@ -12,7 +12,7 @@ import {
 } from 'lucide-react';
 
 export function StatisticsPanel() {
-  const { planTree, executionLog, showActuals } = useQueryPlanStore();
+  const { planTree, executionLog } = useQueryPlanStore();
 
   const stats = useMemo(() => {
     if (!planTree) return null;
